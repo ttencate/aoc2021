@@ -93,6 +93,8 @@ def main():
     (failure_count, test_count) = doctest.testmod(module)
     if test_count == 0:
         print('Warning: no doctests found')
+    else:
+        print(f'Doctest: {test_count - failure_count}/{test_count} passed')
     if failure_count > 0:
         return 1
 
