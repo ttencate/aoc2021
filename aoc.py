@@ -5,6 +5,7 @@ import datetime
 import doctest
 import importlib
 import os.path
+import subprocess
 import sys
 import urllib.request
 
@@ -59,6 +60,7 @@ def get_puzzle_input(year, day):
         pass
 
     url = f'https://adventofcode.com/{year}/day/{day}/input'
+    print(f'Fetching puzzle input from {url}')
     puzzle_input = fetch(url)
     with open(filename, 'wt') as f:
         f.write(puzzle_input)
@@ -88,6 +90,13 @@ def main():
         print(f'Creating {filename}')
         with open(filename, 'wt') as f:
             f.write(TEMPLATE)
+
+        url = f'https://adventofcode.com/{year}/day/{day}'
+        print(f'Opening {url} in browser')
+        subprocess.run(['xdg-open', url])
+
+        get_puzzle_input(year, day)
+
         return
 
     (failure_count, test_count) = doctest.testmod(module)
