@@ -59,8 +59,6 @@ def solve(input):
             number for number in numbers
             if number[i] == majority
         ]
-        if len(numbers) == 1:
-            break
     assert(len(numbers) == 1)
     oxygen_generator_rating = int(numbers[0], base=2)
 
@@ -71,8 +69,6 @@ def solve(input):
             number for number in numbers
             if number[i] != majority
         ]
-        if len(numbers) == 1:
-            break
     assert(len(numbers) == 1)
     co2_scrubber_rating = int(numbers[0], base=2)
 
