@@ -4,6 +4,7 @@ import argparse
 import datetime
 import doctest
 import importlib
+import os
 import os.path
 import subprocess
 import sys
@@ -21,7 +22,7 @@ def solve(input):
 
 
 def load_session_cookie():
-    filename = os.path.join(os.path.dirname(__file__), '.session_cookie')
+    filename = '.session_cookie'
     try:
         with open(filename, 'rt') as f:
             return f.read().strip()
@@ -52,7 +53,7 @@ def fetch(url):
 
 
 def get_puzzle_input(year, day):
-    filename = os.path.join(os.path.dirname(__file__), 'input', f'{day:02}.in')
+    filename = os.path.join('input', f'{day:02}.in')
     try:
         with open(filename, 'rt') as f:
             return f.read()
@@ -83,10 +84,12 @@ def main():
     year = args.year
     day = args.day
 
+    os.chdir(os.path.dirname(__file__))
+
     try:
         module = importlib.import_module(f'{day:02}')
     except ModuleNotFoundError:
-        filename = os.path.join(os.path.dirname(__file__), f'{day:02}.py')
+        filename = f'{day:02}.py'
         print(f'Creating {filename}')
         with open(filename, 'wt') as f:
             f.write(TEMPLATE)
@@ -96,6 +99,13 @@ def main():
         subprocess.run(['xdg-open', url])
 
         get_puzzle_input(year, day)
+
+        print(f'Launching editor')
+        subprocess.run([
+            'vim', '-p',
+            filename, 
+            os.path.join('input', f'{day:02}.in')
+        ])
 
         return
 
