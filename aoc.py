@@ -13,12 +13,18 @@ import urllib.request
 import pytz
 
 
-TEMPLATE = '''import aoc
+TEMPLATE = """import aoc
+
+
+EXAMPLE1 = '''
+'''
 
 
 def solve(input):
-    pass
-'''
+    '''
+    >>> solve(EXAMPLE1)
+    '''
+"""
 
 
 def load_session_cookie():
@@ -86,10 +92,8 @@ def main():
 
     os.chdir(os.path.dirname(__file__))
 
-    try:
-        module = importlib.import_module(f'{day:02}')
-    except ModuleNotFoundError:
-        filename = f'{day:02}.py'
+    filename = f'{day:02}.py'
+    if not os.path.exists(filename):
         print(f'Creating {filename}')
         with open(filename, 'wt') as f:
             f.write(TEMPLATE)
@@ -108,6 +112,8 @@ def main():
         ])
 
         return
+
+    module = importlib.import_module(f'{day:02}')
 
     (failure_count, test_count) = doctest.testmod(module)
     if test_count == 0:
