@@ -1,4 +1,5 @@
 import aoc
+from grid import Grid
 
 
 EXAMPLE1 = '''
@@ -15,38 +16,33 @@ EXAMPLE1 = '''
 '''
 
 
-def neigh(pos):
-    return ((pos[0] + i, pos[1] + j) for i in range(-1, 2) for j in range(-1, 2) if i or j)
-
-
 def solve(input):
     '''
     >>> solve(EXAMPLE1)
     (1656, 195)
     '''
-    rows = [list(map(int, line)) for line in input.strip().splitlines()]
-    energies = {(i, j): rows[i][j] for i in range(10) for j in range(10)}
+    energies = Grid.parse(input)
     answer1 = 0
     step = 0
     while True:
         flashed = set()
-        for pos in energies:
-            energies[pos] += 1
+        for coord in energies:
+            energies[coord] += 1
         while True:
             any_flashed = False
-            for pos, energy in energies.items():
-                if energy > 9 and pos not in flashed:
-                    flashed.add(pos)
+            for coord in energies:
+                energy = energies[coord]
+                if energy > 9 and coord not in flashed:
+                    flashed.add(coord)
                     any_flashed = True
                     if step < 100:
                         answer1 += 1
-                    for n in neigh(pos):
-                        if n in energies:
-                            energies[n] += 1
+                    for neighbor in energies.neighbors_8(coord):
+                        energies[neighbor] += 1
             if not any_flashed:
                 break
-        for pos in flashed:
-            energies[pos] = 0
+        for coord in flashed:
+            energies[coord] = 0
         step += 1
         if len(flashed) == len(energies):
             answer2 = step

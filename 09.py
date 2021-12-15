@@ -1,4 +1,5 @@
 import aoc
+from grid import Grid
 
 
 EXAMPLE1 = '''
@@ -10,44 +11,31 @@ EXAMPLE1 = '''
 '''
 
 
-def neigh(pos):
-    i, j = pos
-    return ((i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1))
-
-
 def solve(input):
     '''
     >>> solve(EXAMPLE1)
     (15, 1134)
     '''
-    heights = [list(map(int, line)) for line in input.strip().splitlines()]
-    ni = len(heights)
-    nj = len(heights[0])
-    def height(pos):
-        i, j = pos
-        if i < 0 or i >= ni or j < 0 or j >= nj:
-            return 10
-        return heights[i][j]
-    poses = [(i, j) for i in range(ni) for j in range(nj)]
+    heights = Grid.parse(input)
 
     answer1 = sum(
-        1 + height(pos) for pos in poses
-        if all(height(n) > height(pos) for n in neigh(pos)))
+        1 + heights[coord] for coord in heights
+        if all(heights[n] > heights[coord] for n in heights.neighbors_4(coord)))
 
     basin_sizes = []
     visited = set()
-    for pos in poses:
+    for coord in heights:
         basin = set()
-        queue = [pos]
+        queue = [coord]
         while queue:
             curr = queue.pop()
             if curr in visited:
                 continue
             visited.add(curr)
-            if height(curr) >= 9:
+            if heights[curr] >= 9:
                 continue
             basin.add(curr)
-            for n in neigh(curr):
+            for n in heights.neighbors_4(curr):
                 queue.append(n)
         if basin:
             basin_sizes.append(len(basin))
