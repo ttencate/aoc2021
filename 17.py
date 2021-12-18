@@ -1,3 +1,4 @@
+import math
 import re
 
 import aoc
@@ -13,10 +14,10 @@ def solve(input):
     '''
     target = x_min, x_max, y_min, y_max = parse(input)
 
-    initial_vx_min = 0 # TODO can be tightened
+    initial_vx_min = 0 # TODO this can be tightened
     initial_vx_max = x_max
     initial_vy_min = y_min
-    initial_vy_max = 2000 # Hack hack
+    initial_vy_max = 2000 # TODO hack hack; this can be tightened per initial_vx
 
     answer1 = 0
     answer2 = 0
@@ -75,17 +76,73 @@ def hits_target(initial_vx, initial_vy, target):
     ...         print(case)
     '''
     x_min, x_max, y_min, y_max = target
-    x, y = 0, 0
-    vx, vy = initial_vx, initial_vy
-    while x < x_max and y > y_min:
-        x += vx
-        y += vy
-        if x_min <= x <= x_max and y_min <= y <= y_max:
-            return True
-        if vx > 0:
-            vx -= 1
-        vy -= 1
-    return False
+    t_enter_y = t_from_y(y_max, initial_vy)
+    t_leave_y = t_from_y(y_min, initial_vy)
+    t_enter_x = t_from_x(x_min, initial_vx)
+    t_leave_x = t_from_x(x_max, initial_vx)
+    t_enter = max(t_enter_x, t_enter_y)
+    t_leave = min(t_leave_x, t_leave_y)
+    return t_enter < math.inf and math.ceil(t_enter) <= math.floor(t_leave)
+
+
+def t_from_x(x, initial_vx):
+    '''
+    >>> t_from_x(0, 7)
+    0.0
+    >>> t_from_x(7, 7)
+    1.0
+    >>> t_from_x(13, 7)
+    2.0
+    >>> t_from_x(18, 7)
+    3.0
+    >>> t_from_x(22, 7)
+    4.0
+    >>> t_from_x(25, 7)
+    5.0
+    >>> t_from_x(27, 7)
+    6.0
+    >>> t_from_x(28, 7)
+    7.0
+    >>> t_from_x(29, 7)
+    inf
+    '''
+    a = 0.5
+    b = -initial_vx - 0.5
+    c = x
+    d = b**2 - 4 * a * c
+    if d < 0:
+        return math.inf
+    return (-b - math.sqrt(d)) / (2 * a)
+
+
+def t_from_y(y, initial_vy):
+    '''
+    >>> t_from_y(4, 2)
+    inf
+    >>> t_from_y(3.125, 2)
+    2.5
+    >>> t_from_y(3, 2)
+    3.0
+    >>> t_from_y(2, 2)
+    4.0
+    >>> t_from_y(0, 2)
+    5.0
+    >>> t_from_y(-3, 2)
+    6.0
+    >>> t_from_y(-7, 2)
+    7.0
+    '''
+    # y(t) = -1/2 * t * (t - (vy0 + 1/2))
+    #      = -1/2 * t^2 + (vy0 + 1/2) * t
+    #    0 =  1/2 * t^2 - (vy0 + 1/2) * t + yt
+    #    a = -1/2     b = -vy0 - 1/2   c = yt
+    a = 0.5
+    b = -initial_vy - 0.5
+    c = y
+    d = b**2 - 4 * a * c
+    if d < 0:
+        return math.inf
+    return (-b + math.sqrt(d)) / (2 * a)
 
 
 def arc_top(initial_vy):
