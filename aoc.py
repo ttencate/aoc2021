@@ -85,6 +85,8 @@ def main():
                         help='Day indicating which solution to run (1-25); defaults to today')
     parser.add_argument('--year', type=int, default=2021,
                         help='Year indicating which solution to run')
+    parser.add_argument('--skip_tests', action='store_true',
+                        help='Skip doctests and go straight to the puzzle input')
     args = parser.parse_args()
 
     year = args.year
@@ -115,13 +117,14 @@ def main():
 
     module = importlib.import_module(f'{day:02}')
 
-    (failure_count, test_count) = doctest.testmod(module)
-    if test_count == 0:
-        print('Warning: no doctests found')
-    else:
-        print(f'Doctest: {test_count - failure_count}/{test_count} passed')
-    if failure_count > 0:
-        return 1
+    if not args.skip_tests:
+        (failure_count, test_count) = doctest.testmod(module)
+        if test_count == 0:
+            print('Warning: no doctests found')
+        else:
+            print(f'Doctest: {test_count - failure_count}/{test_count} passed')
+        if failure_count > 0:
+            return 1
 
     puzzle_input = get_puzzle_input(year, day)
     answer = module.solve(puzzle_input)
