@@ -5,13 +5,13 @@ class Grid:
         self.__cells = cells
 
     @classmethod
-    def parse(cls, input):
+    def parse(cls, input, transform=lambda x: x):
         r'''
         >>> print(Grid.parse('123\n456\n'))
         1 2 3
         4 5 6
         '''
-        return Grid([list(map(int, line)) for line in input.strip().splitlines()])
+        return Grid([list(map(transform, line)) for line in input.strip().splitlines()])
 
     @property
     def width(self):
@@ -70,7 +70,7 @@ class Grid:
         ))
 
     def __str__(self):
-        return '\n'.join(' '.join(map(str, row)) for row in self.__cells)
+        return '\n'.join(''.join(map(str, row)) for row in self.__cells)
 
     def __repr__(self):
         return f'Grid({repr(self.__cells)})'

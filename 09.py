@@ -16,7 +16,7 @@ def solve(input):
     >>> solve(EXAMPLE1)
     (15, 1134)
     '''
-    heights = Grid.parse(input)
+    heights = Grid.parse(input, int)
 
     answer1 = sum(
         1 + heights[coord] for coord in heights

@@ -21,7 +21,7 @@ def solve(input):
     >>> solve(EXAMPLE1)
     (1656, 195)
     '''
-    energies = Grid.parse(input)
+    energies = Grid.parse(input, int)
     answer1 = 0
     step = 0
     while True:

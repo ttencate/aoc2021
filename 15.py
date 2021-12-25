@@ -23,7 +23,7 @@ def solve(input):
     >>> solve(EXAMPLE1)
     (40, 315)
     '''
-    risks = Grid.parse(input)
+    risks = Grid.parse(input, int)
     extended_risks = Grid([
         [0 for x in range(risks.width * 5)]
         for y in range(risks.height * 5)
